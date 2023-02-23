@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+import TemplateInjector from './TemplateInjector';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
           Learn React
         </a>
 
-        <div id="fathym-compose" className="mt-8 prose dark:prose-invert"></div>
+        <TemplateInjector templateId='fathym-compose' className="mt-8 prose dark:prose-invert"></TemplateInjector>
       </header>
     </div>
   );
