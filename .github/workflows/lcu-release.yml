@@ -1,4 +1,4 @@
-name: React NPM Build/Release
+name: Root Static Build/Release
 
 on:
   push:
@@ -14,10 +14,8 @@ env:
   MainBranch: integration
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: npm ci
-  DeployCommand: npm run deploy
-  Organization: mcgear
-  Repository: new-repo4
-  Output: ./build
+  BuildCommand: npm run build
+  Output: ./
 
 jobs:
   build:
@@ -91,20 +89,18 @@ jobs:
       - uses: actions/setup-node@v2
         if: ${{ (!!env.InstallCommand || !!env.BuildCommand) && steps.package_json_exists.outputs.files_exists == 'true' }}
         with:
-          node-version: 16
-          registry-url: '${{ env.NPMRegistry }}'
+          node-version: '*'
+          registry-url: ${{ env.NPMRegistry }}
 
       # install npm dependencies from package-lock.json
       - name: npm install
         if: ${{ !!env.InstallCommand && steps.package_json_exists.outputs.files_exists == 'true' }}
         run: ${{ env.InstallCommand }}
 
-      # build & publish npm packages to npmjs.org
-      - name: npm build & publish
-        if: ${{ !!env.DeployCommand && steps.package_json_exists.outputs.files_exists == 'true' }}
-        run: ${{ env.DeployCommand }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # build npm
+      - name: npm build
+        if: ${{ !!env.BuildCommand && steps.package_json_exists.outputs.files_exists == 'true' }}
+        run: ${{ env.BuildCommand }}
 
       # publish github artifacts
       - name: Archive production artifacts
